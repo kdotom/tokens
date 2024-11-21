@@ -121,7 +121,7 @@ def main():
         
         # Test cases
         test_texts = [
-            "The capital of California is Sacramento. The capital of Washington is Seattle. The capital of Delware is Dover. The capital of Florida is",
+            "The capital of California is Sacramento. The capital of Washington is Seattle. The capital of Delaware is Dover. The capital of Florida is Tallahassee. The capital of Texas is Austin. The capital of New York is Albany. The capital of Ohio is Columbus. The capital of Michigan is Lansing. The capital of Oregon is Salem. The capital of Nevada is Carson City. The capital of Arizona is Phoenix. The capital of Colorado is Denver. The capital of Montana is Helena. The capital of Georgia is ",
         ]
         
         for text in test_texts:
