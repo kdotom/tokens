@@ -10,8 +10,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Constants
-MODEL_NAME = "meta-llama/Llama-3.2-1B"
-CACHE_DIR = "model_cache/llama-3.2-1b"
+MODEL_NAME = "meta-llama/Llama-3.1-8B-Instruct"
+CACHE_DIR = "model_cache/llama-3.1-8b-instruct"
 EMBEDDING_DIM = 2048
 
 def setup_auth():
@@ -131,7 +131,7 @@ def main():
         processor = LlamaEmbeddingProcessor()
         
         # Example text
-        input_text = "The quick brown fox jumps over the lazy dog"
+        input_text = "The first 10 digits of pi are "
         
         # Step 1: Convert words to embeddings
         logger.info("\n=== Step 1: Words to Embeddings ===")
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--clear-cache', action='store_true', help='Clear the model cache before running')
     parser.add_argument('--text', type=str, help='Input text to process', 
-                       default="The quick brown fox jumps over the lazy dog")
+                       default="The quick brown fox jumps over the lazy dog.")
     args = parser.parse_args()
     
     if args.clear_cache and os.path.exists(CACHE_DIR):
