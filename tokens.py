@@ -121,8 +121,42 @@ def main():
         
         # Test cases
         test_texts = [
-            "The capital of California is Sacramento. The capital of Washington is Seattle. The capital of Delaware is Dover. The capital of Florida is Tallahassee. The capital of Texas is Austin. The capital of New York is Albany. The capital of Ohio is Columbus. The capital of Michigan is Lansing. The capital of Oregon is Salem. The capital of Nevada is Carson City. The capital of Arizona is Phoenix. The capital of Colorado is Denver. The capital of Montana is Helena. The capital of Georgia is ",
-        ]
+"""
+Montgomery, Alabama
+Juneau, Alaska
+Phoenix, Arizona
+Little Rock, Arkansas
+Sacramento, California
+Denver, Colorado
+Hartford, Connecticut
+Dover, Delaware
+Tallahassee, Florida
+Atlanta, Georgia
+Honolulu, Hawaii
+Boise, Idaho
+Springfield, Illinois
+Indianapolis, Indiana
+Des Moines, Iowa
+Topeka, Kansas
+Frankfort, Kentucky
+Baton Rouge, Louisiana
+Augusta, Maine
+Annapolis, Maryland
+Boston, Massachusetts
+Lansing, Michigan
+Saint Paul, Minnesota
+Jackson, Mississippi
+Jefferson City, Missouri
+Helena, Montana
+Lincoln, Nebraska
+Carson City, Nevada
+Concord, New Hampshire
+Trenton, New Jersey
+Santa Fe, New Mexico
+Albany, New York
+Raleigh, North Carolina
+Bismarck, North Dakota"""
+        ,]
         
         for text in test_texts:
             logger.info("\n" + "="*80)
