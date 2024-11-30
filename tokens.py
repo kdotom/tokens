@@ -32,8 +32,8 @@ class TokenAnalyzer:
         
     def analyze_sequence(self, text):
         """Analyze the full sequence of token processing"""
-        logger.info("\n=== Input Analysis ===")
-        logger.info(f"Original text: '{text}'")
+        #logger.info("\n=== Input Analysis ===")
+        #logger.info(f"Original text: '{text}'")
         
         # Input tokenization
         input_tokens = self.tokenizer.encode(text, return_tensors="pt").to(self.device)
@@ -46,53 +46,74 @@ class TokenAnalyzer:
             # Process through model
             outputs = self.model(
                 inputs_embeds=input_embeddings,
+                output_hidden_states=True,
                 return_dict=True
             )
+
+            # Get output embeddings from the last hidden state
+            output_embeddings = outputs.hidden_states[-1]  # Gets the last layer's hidden states
             
             # Get output tokens
-            output_logits = outputs.logits
+            #output_logits = outputs.logits
+            lm_head = self.model.get_output_embeddings()
+            output_logits = lm_head(output_embeddings)
+
             output_tokens = torch.argmax(output_logits, dim=-1)
             output_token_strs = self.tokenizer.convert_ids_to_tokens(output_tokens[0])
             output_text = self.tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0]
         
         # Display detailed analysis
-        logger.info("\n=== Token Processing Steps ===")
-        logger.info("\n1. Input Token Analysis:")
-        logger.info("-" * 80)
-        logger.info(f"{'Position':<10} {'Token ID':<10} {'Token':<20} {'Token String':<30}")
-        logger.info("-" * 80)
+        #logger.info("\n=== Token Processing Steps ===")
+        #logger.info("\n1. Input Token Analysis:")
+        #logger.info("-" * 80)
+        #logger.info(f"{'Position':<10} {'Token ID':<10} {'Token':<20} {'Token String':<30}")
+        #logger.info("-" * 80)
         
         for pos, (token_id, token_str) in enumerate(zip(input_tokens[0].tolist(), input_token_strs)):
             display_str = token_str.replace('Ġ', '[SPACE]')
-            logger.info(f"{pos:<10} {token_id:<10} {display_str:<20} {self.explain_token(token_str):<30}")
+            #logger.info(f"{pos:<10} {token_id:<10} {display_str:<20} {self.explain_token(token_str):<30}")
         
-        logger.info("\n2. Embedding Shapes:")
-        logger.info(f"Input embedding shape:  {input_embeddings.shape}")
-        logger.info(f"Input embedding dtype:  {input_embeddings.dtype}")
+        #logger.info("\n2. Embedding Shapes:")
+        #logger.info(f"Input embedding shape:  {input_embeddings.shape}")
+        #logger.info(f"Input embedding dtype:  {input_embeddings.dtype}")
+        logger.info("\n=== Input Analysis ===")
+        logger.info(f"First input token: {input_tokens[0]}")
+        logger.info(f"First input embedding: {input_embeddings[0][0]}")
+        logger.info(f"First input embedding: {input_embeddings[0][0].shape}")
         
-        logger.info("\n3. Output Token Analysis:")
-        logger.info("-" * 80)
-        logger.info(f"{'Position':<10} {'Token ID':<10} {'Token':<20} {'Token String':<30}")
-        logger.info("-" * 80)
+        #logger.info("\n3. Output Token Analysis:")
+        #logger.info("-" * 80)
+        #logger.info(f"{'Position':<10} {'Token ID':<10} {'Token':<20} {'Token String':<30}")
+        #logger.info("-" * 80)
+        logger.info("\n=== Output Analysis ===")
+        logger.info(f"First output embedding: {output_embeddings[0][0]}")
+        logger.info(f"First output embedding shape: {output_embeddings[0][0].shape}")
+        logger.info(f"First output token {output_tokens[0]}")
+
+
+        logger.info(f"\n=== Text In ===")
+        logger.info(f"\n{text}")
         
+        logger.info(f"\n=== Text Out ===")
+        logger.info(f"\n{output_text}")
         for pos, (token_id, token_str) in enumerate(zip(output_tokens[0].tolist(), output_token_strs)):
             display_str = token_str.replace('Ġ', '[SPACE]')
-            logger.info(f"{pos:<10} {token_id:<10} {display_str:<20} {self.explain_token(token_str):<30}")
+            #logger.info(f"{pos:<10} {token_id:<10} {display_str:<20} {self.explain_token(token_str):<30}")
         
-        logger.info("\n4. Final Output:")
-        logger.info(f"Generated text: '{output_text}'")
+        #logger.info("\n4. Final Output:")
+        #logger.info(f"Generated text: '{output_text}'")
         
         # Token matching analysis
-        logger.info("\n5. Token Matching Analysis:")
-        logger.info("-" * 80)
-        logger.info("Position  Input Token -> Output Token")
-        logger.info("-" * 80)
+        #logger.info("\n5. Token Matching Analysis:")
+        #logger.info("-" * 80)
+        #logger.info("Position  Input Token -> Output Token")
+        #logger.info("-" * 80)
         
         for pos in range(min(len(input_token_strs), len(output_token_strs))):
             in_tok = input_token_strs[pos].replace('Ġ', '[SPACE]')
             out_tok = output_token_strs[pos].replace('Ġ', '[SPACE]')
             match = "✓" if input_tokens[0][pos] == output_tokens[0][pos] else "×"
-            logger.info(f"{pos:<8}  {in_tok:<20} -> {out_tok:<20} {match}")
+            #logger.info(f"{pos:<8}  {in_tok:<20} -> {out_tok:<20} {match}")
             
         return {
             'input_tokens': input_tokens,
@@ -159,9 +180,9 @@ Bismarck, North Dakota"""
         ,]
         
         for text in test_texts:
-            logger.info("\n" + "="*80)
+            #logger.info("\n" + "="*80)
             results = analyzer.analyze_sequence(text)
-            logger.info("="*80)
+            #logger.info("="*80)
         
     except Exception as e:
         logger.error(f"Error: {e}")
