@@ -46,6 +46,10 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     # Store individual newly generated tokens
     new_tokens = []
     
+    print("\nGeneration Progress:")
+    print(f"Input: {tokenizer.decode(current_ids[0])}")
+    print("-" * 50)
+    
     # Generate tokens one at a time
     for i in range(max_new_tokens):
         # Get model output for current sequence
@@ -68,17 +72,23 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         
         # Sample next token
         next_token = torch.multinomial(probs, num_samples=1)
+        next_token_id = next_token[0].item()
         
         # Store the new token
-        new_tokens.append(next_token[0].item())
+        new_tokens.append(next_token_id)
+        
+        # Print progress
+        print(f"Step {i+1}: Token {next_token_id} -> '{tokenizer.decode([next_token_id])}'")
+        print(f"Current text: {tokenizer.decode(current_ids[0])}▌")
+        print("-" * 50)
         
         # Stop if we hit the EOS token
-        if next_token[0].item() == tokenizer.eos_token_id:
+        if next_token_id == tokenizer.eos_token_id:
             break
             
         # Add new token to sequence
         current_ids = torch.cat([current_ids, next_token], dim=1)
-        generated_ids.append(next_token[0].item())
+        generated_ids.append(next_token_id)
         
         # Update attention mask
         attention_mask = torch.ones_like(current_ids)
@@ -96,11 +106,10 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     return {
         'input_text': messages,
         'output_text': tokenizer.decode(generated_sequence, skip_special_tokens=True),
-        'input_tokens': tokenizer.convert_ids_to_tokens(generated_ids[0]),
-        'output_tokens': tokenizer.convert_ids_to_tokens(generated_sequence),
-        'all_embeddings': all_embeddings,  # List of embeddings at each generation step
-        'generated_ids': generated_ids,
-        'new_tokens': new_tokens  # Just the newly generated tokens
+        'input_token_ids': generated_ids[0],
+        'output_token_ids': generated_sequence,
+        'all_embeddings': all_embeddings,
+        'new_tokens': new_tokens
     }
 
 # Test message
@@ -109,24 +118,11 @@ messages = "What's the weather like in spring?"
 # Generate and get results
 results = generate_with_embeddings(messages, model, tokenizer)
 
-# Print results
-print("Input Text:")
-print(results['input_text'])
-
-print("\nOutput Text:")
-print(results['output_text'])
-
-print("\nInput Token IDs:", generated_ids[0])
-
-print("\nOutput Token IDs:", generated_sequence)
-
-print("\nNumber of generation steps:", len(results['all_embeddings']))
+# Print final results
+print("\nFinal Results:")
+print("Input Text:", results['input_text'])
+print("Input Token IDs:", results['input_token_ids'])
+print("Output Token IDs:", results['output_token_ids'])
+print("Final Output:", results['output_text'])
+print("Number of generation steps:", len(results['all_embeddings']))
 print("Shape of final embeddings:", results['all_embeddings'][-1].shape)
-
-# Print the generation progression
-print("\nToken generation progression:")
-for i, token_id in enumerate(results['new_tokens']):
-    if i < 10:  # Print first 10 steps
-        token_text = tokenizer.convert_ids_to_tokens(token_id)
-        print(f"Step {i}: {token_id} -> {token_text}")
-
