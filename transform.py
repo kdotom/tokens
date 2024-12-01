@@ -41,12 +41,14 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         current_embeddings = model.get_input_embeddings()(current_ids)
         print('Initial Embeddings:')
         target_embedding_idx = 1
-        target_element_idx = 200
-        for idx in range(len(current_embeddings[0][target_embedding_idx])):
-            if idx == target_element_idx:
-                current_embeddings[0][target_embedding_idx][idx] = 1
-            else:
-                current_embeddings[0][target_embedding_idx][idx] = 0
+        target_element_idx = 1
+        custom_embedding = False
+        if custom_embedding:
+            for idx in range(len(current_embeddings[0][target_embedding_idx])):
+                if idx == target_element_idx:
+                    current_embeddings[0][target_embedding_idx][idx] = 1
+                else:
+                    current_embeddings[0][target_embedding_idx][idx] = 0
         target_embedding = current_embeddings[0][target_embedding_idx]
         print(current_embeddings[0][target_embedding_idx])
     
