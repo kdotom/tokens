@@ -40,7 +40,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     with torch.no_grad():
         current_embeddings = model.get_input_embeddings()(current_ids)
         print('Initial Embeddings:')
-        target_idx = 5
+        target_idx = 1
         for idx in range(len(current_embeddings[0][target_idx])):
             if idx == 0:
                 current_embeddings[0][target_idx][idx] = 1
@@ -132,7 +132,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     }
 
 # Test message
-messages = "The definition of apple is"
+messages = "x means"
 
 # Generate and get results
 results = generate_with_embeddings(messages, model, tokenizer)
