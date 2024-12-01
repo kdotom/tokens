@@ -39,6 +39,15 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     # Get initial embeddings
     with torch.no_grad():
         current_embeddings = model.get_input_embeddings()(current_ids)
+        print('Initial Embeddings:')
+        target_idx = 5
+        for idx in range(len(current_embeddings[0][target_idx])):
+            if idx == 0:
+                current_embeddings[0][target_idx][idx] = 1
+            else:
+                current_embeddings[0][target_idx][idx] = 0
+        target_embedding = current_embeddings[0][target_idx]
+        print(current_embeddings[0][-2])
     
     # Store all embeddings
     all_embeddings = [current_embeddings.detach().cpu().to(torch.float32).numpy()]
@@ -106,7 +115,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         # Get embeddings for the whole sequence
         with torch.no_grad():
             current_embeddings = model.get_input_embeddings()(current_ids)
-        
+            current_embeddings[0][target_idx] = target_embedding
         # Store embeddings
         all_embeddings.append(current_embeddings.detach().cpu().to(torch.float32).numpy())
     
