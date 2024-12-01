@@ -48,7 +48,10 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     
     print("\nGeneration Progress:")
     print(f"Input: {tokenizer.decode(current_ids[0])}")
-    print("-" * 50)
+    print(f"Initial embedding shape: {current_embeddings.shape}")
+    initial_embedding_values = current_embeddings[0, 0, :5].detach().cpu().to(torch.float32).numpy()
+    print(f"First 5 values of initial embedding: {initial_embedding_values}")
+    print("-" * 70)
     
     # Generate tokens one at a time
     for i in range(max_new_tokens):
@@ -60,6 +63,9 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
                 return_dict=True,
                 output_hidden_states=True
             )
+        
+        # Get output embeddings from the last hidden state
+        output_embeddings = outputs.hidden_states[-1]
         
         # Get logits for next token
         next_token_logits = outputs.logits[:, -1, :]
@@ -78,9 +84,13 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         new_tokens.append(next_token_id)
         
         # Print progress
-        print(f"Step {i+1}: Token {next_token_id} -> '{tokenizer.decode([next_token_id])}'")
+        print(f"Step {i+1}:")
+        print(f"New token: {next_token_id} -> '{tokenizer.decode([next_token_id])}'")
         print(f"Current text: {tokenizer.decode(current_ids[0])}▌")
-        print("-" * 50)
+        print(f"Output embedding shape: {output_embeddings.shape}")
+        last_embedding_values = output_embeddings[0, -1, :5].detach().cpu().to(torch.float32).numpy()
+        print(f"Last 5 values of output embedding: {last_embedding_values}")
+        print("-" * 70)
         
         # Stop if we hit the EOS token
         if next_token_id == tokenizer.eos_token_id:
@@ -113,7 +123,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     }
 
 # Test message
-messages = "What's the weather like in spring?"
+messages = "The definition of apple is"
 
 # Generate and get results
 results = generate_with_embeddings(messages, model, tokenizer)
