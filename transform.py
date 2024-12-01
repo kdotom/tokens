@@ -41,7 +41,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         current_embeddings = model.get_input_embeddings()(current_ids)
         print('Initial Embeddings:')
         target_embedding_idx = 1
-        target_element_idx = 0
+        target_element_idx = 200
         for idx in range(len(current_embeddings[0][target_embedding_idx])):
             if idx == target_element_idx:
                 current_embeddings[0][target_embedding_idx][idx] = 1
@@ -111,6 +111,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         generated_ids.append(next_token_id)
         
         # Update attention mask
+
         attention_mask = torch.ones_like(current_ids)
         
         # Get embeddings for the whole sequence
@@ -133,7 +134,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     }
 
 # Test message
-messages = "x has the following meaning:"
+messages = "x has the following definition: "
 
 # Generate and get results
 results = generate_with_embeddings(messages, model, tokenizer)
