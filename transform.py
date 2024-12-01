@@ -40,14 +40,15 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     with torch.no_grad():
         current_embeddings = model.get_input_embeddings()(current_ids)
         print('Initial Embeddings:')
-        target_idx = 1
-        for idx in range(len(current_embeddings[0][target_idx])):
-            if idx == 0:
-                current_embeddings[0][target_idx][idx] = 1
+        target_embedding_idx = 1
+        target_element_idx = 0
+        for idx in range(len(current_embeddings[0][target_embedding_idx])):
+            if idx == target_element_idx:
+                current_embeddings[0][target_embedding_idx][idx] = 1
             else:
-                current_embeddings[0][target_idx][idx] = 0
-        target_embedding = current_embeddings[0][target_idx]
-        print(current_embeddings[0][-2])
+                current_embeddings[0][target_embedding_idx][idx] = 0
+        target_embedding = current_embeddings[0][target_embedding_idx]
+        print(current_embeddings[0][target_embedding_idx])
     
     # Store all embeddings
     all_embeddings = [current_embeddings.detach().cpu().to(torch.float32).numpy()]
@@ -115,7 +116,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
         # Get embeddings for the whole sequence
         with torch.no_grad():
             current_embeddings = model.get_input_embeddings()(current_ids)
-            current_embeddings[0][target_idx] = target_embedding
+            current_embeddings[0][target_embedding_idx] = target_embedding
         # Store embeddings
         all_embeddings.append(current_embeddings.detach().cpu().to(torch.float32).numpy())
     
@@ -132,7 +133,7 @@ def generate_with_embeddings(messages, model, tokenizer, max_new_tokens=50, temp
     }
 
 # Test message
-messages = "x means"
+messages = "x has the following meaning:"
 
 # Generate and get results
 results = generate_with_embeddings(messages, model, tokenizer)
