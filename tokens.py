@@ -60,7 +60,7 @@ class TokenAnalyzer:
 
             output_tokens = torch.argmax(output_logits, dim=-1)
             output_token_strs = self.tokenizer.convert_ids_to_tokens(output_tokens[0])
-            output_text = self.tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0]
+            output_text = self.tokenizer.batch_decode(output_tokens, skip_special_tokens=False)[0]
         
         # Display detailed analysis
         #logger.info("\n=== Token Processing Steps ===")
@@ -77,7 +77,7 @@ class TokenAnalyzer:
         #logger.info(f"Input embedding shape:  {input_embeddings.shape}")
         #logger.info(f"Input embedding dtype:  {input_embeddings.dtype}")
         logger.info("\n=== Input Analysis ===")
-        logger.info(f"First input token: {input_tokens[0]}")
+        logger.info(f"First input token: {input_tokens[0][0]}")
         logger.info(f"First input embedding: {input_embeddings[0][0]}")
         logger.info(f"First input embedding: {input_embeddings[0][0].shape}")
         
@@ -86,9 +86,9 @@ class TokenAnalyzer:
         #logger.info(f"{'Position':<10} {'Token ID':<10} {'Token':<20} {'Token String':<30}")
         #logger.info("-" * 80)
         logger.info("\n=== Output Analysis ===")
+        logger.info(f"First output token {output_tokens[0][0]}")
         logger.info(f"First output embedding: {output_embeddings[0][0]}")
         logger.info(f"First output embedding shape: {output_embeddings[0][0].shape}")
-        logger.info(f"First output token {output_tokens[0]}")
 
 
         logger.info(f"\n=== Text In ===")
@@ -142,41 +142,13 @@ def main():
         
         # Test cases
         test_texts = [
-"""
-Montgomery, Alabama
-Juneau, Alaska
-Phoenix, Arizona
-Little Rock, Arkansas
-Sacramento, California
-Denver, Colorado
-Hartford, Connecticut
-Dover, Delaware
-Tallahassee, Florida
-Atlanta, Georgia
-Honolulu, Hawaii
-Boise, Idaho
-Springfield, Illinois
-Indianapolis, Indiana
-Des Moines, Iowa
-Topeka, Kansas
-Frankfort, Kentucky
-Baton Rouge, Louisiana
-Augusta, Maine
-Annapolis, Maryland
-Boston, Massachusetts
-Lansing, Michigan
-Saint Paul, Minnesota
-Jackson, Mississippi
-Jefferson City, Missouri
-Helena, Montana
-Lincoln, Nebraska
-Carson City, Nevada
-Concord, New Hampshire
-Trenton, New Jersey
-Santa Fe, New Mexico
-Albany, New York
-Raleigh, North Carolina
-Bismarck, North Dakota"""
+        """Here are some examples of people sharing their names and favorite things:
+        Sarah: My name is Sarah and my favorite color is blue. I love how it reminds me of the ocean.
+        James: My name is James and my favorite food is pizza. Nothing beats a slice of pepperoni pizza.
+        Emily: My name is Emily and my favorite hobby is painting. I spend hours at my easel.
+        David: My name is David and my favorite sport is basketball. I play every weekend.
+        Alex: My name is Alex and my favorite season is autumn. The colorful leaves are beautiful.
+        Merve: My name is Merve and my favorite"""
         ,]
         
         for text in test_texts:
